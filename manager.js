@@ -29,16 +29,14 @@ let clock
 let velocity
 let direction
 
-let background
 let bgRenderer
 let bgScene
-let bgCamera
+let camera
 let bgComposer
-let bgControls
+let controls
 
 let systemRenderer
 let systemScene
-let systemCamera
 let systemComposer
 
 /**
@@ -48,6 +46,17 @@ function setup () {
     clock = new THREE.Clock()
     velocity = new THREE.Vector3(0, 0, 0)
     direction = new THREE.Vector3(0, 0, 0)
+
+    camera = new THREE.PerspectiveCamera(CAMERA_PARAMS.fov, CAMERA_PARAMS.aspect,
+        CAMERA_PARAMS.near, CAMERA_PARAMS.far)
+    camera.position.x = CAMERA_PARAMS.startPos.x
+    camera.position.y = CAMERA_PARAMS.startPos.y
+    camera.position.z = CAMERA_PARAMS.startPos.z
+    camera.lookAt(new THREE.Vector3())
+
+    document.addEventListener('click', function () {
+        controls.lock()
+    })
     bindListeners()
 }
 
@@ -69,17 +78,10 @@ function setupBackground () {
     bgGeometry.setAttribute('position', new THREE.Float32BufferAttribute(bg.star_pos, 3))
     bgGeometry.setAttribute('color', new THREE.Float32BufferAttribute(bg.star_colour, 3))
     bgGeometry.setAttribute('size', new THREE.Float32BufferAttribute(bg.star_size, 1).setUsage(THREE.DynamicDrawUsage))
-    background = new THREE.Points(bgGeometry, bg.star_shader)
+    const background = new THREE.Points(bgGeometry, bg.star_shader)
     bgScene.add(background)
 
-    bgCamera = new THREE.PerspectiveCamera(CAMERA_PARAMS.fov, CAMERA_PARAMS.aspect,
-        CAMERA_PARAMS.near, CAMERA_PARAMS.far)
-    bgCamera.position.x = CAMERA_PARAMS.startPos.x
-    bgCamera.position.y = CAMERA_PARAMS.startPos.y
-    bgCamera.position.z = CAMERA_PARAMS.startPos.z
-    bgCamera.lookAt(new THREE.Vector3())
-
-    const renderPass = new RenderPass(bgScene, bgCamera)
+    const renderPass = new RenderPass(bgScene, camera)
     const bloomPass = new UnrealBloomPass(new THREE.Vector2(canvas.innerWidth, canvas.innerHeight))
     bloomPass.threshold = 0
     bloomPass.strength = 1.5
@@ -90,10 +92,7 @@ function setupBackground () {
     bgComposer.addPass(bloomPass)
     bgRenderer.setPixelRatio(window.devicePixelRatio)
 
-    bgControls = new PointerLockControls(bgCamera, canvas)
-    document.addEventListener('click', function () {
-        bgControls.lock()
-    })
+    controls = new PointerLockControls(camera, canvas)
 }
 
 /**
@@ -110,12 +109,12 @@ function setupSolarSystem () {
     systemRenderer = new THREE.WebGLRenderer({ canvas, alpha: true })
     systemScene = new THREE.Scene()
 
-    systemCamera = new THREE.PerspectiveCamera(CAMERA_PARAMS.fov, CAMERA_PARAMS.aspect,
+    camera = new THREE.PerspectiveCamera(CAMERA_PARAMS.fov, CAMERA_PARAMS.aspect,
         CAMERA_PARAMS.near, CAMERA_PARAMS.far)
-    systemCamera.position.x = CAMERA_PARAMS.startPos.x
-    systemCamera.position.y = CAMERA_PARAMS.startPos.y
-    systemCamera.position.z = CAMERA_PARAMS.startPos.z
-    systemCamera.lookAt(new THREE.Vector3())
+    camera.position.x = CAMERA_PARAMS.startPos.x
+    camera.position.y = CAMERA_PARAMS.startPos.y
+    camera.position.z = CAMERA_PARAMS.startPos.z
+    camera.lookAt(new THREE.Vector3())
 
     const geo = new THREE.SphereGeometry(SUN.radius(0), SPHERE_PARAMS.width_segments, SPHERE_PARAMS.height_segments)
     const body = new THREE.Mesh(geo, SUN.material)
@@ -131,7 +130,7 @@ function setupSolarSystem () {
         continue
     }
 
-    const renderPass = new RenderPass(systemScene, systemCamera)
+    const renderPass = new RenderPass(systemScene, camera)
     systemComposer = new EffectComposer(systemRenderer)
     systemComposer.addPass(renderPass)
     systemComposer.setPixelRatio(window.devicePixelRatio)
@@ -143,7 +142,7 @@ function setupSolarSystem () {
 function render () {
     const dTime = clock.getDelta() / TIME_SCALE
     requestAnimationFrame(render)
-    if (bgControls.isLocked) {
+    if (controls.isLocked) {
         velocity.x -= velocity.x * dTime * FRICTION
         velocity.y -= velocity.y * dTime * FRICTION
         velocity.z -= velocity.z * dTime * FRICTION
@@ -157,9 +156,9 @@ function render () {
         velocity.y += direction.y * dTime * ACCELERATION
         velocity.z += direction.z * dTime * ACCELERATION
 
-        bgControls.moveForward(velocity.x * dTime * MOVE_SCALE)
-        bgControls.moveUp(velocity.y * dTime * MOVE_SCALE)
-        bgControls.moveRight(velocity.z * dTime * MOVE_SCALE)
+        controls.moveForward(velocity.x * dTime * MOVE_SCALE)
+        controls.moveUp(velocity.y * dTime * MOVE_SCALE)
+        controls.moveRight(velocity.z * dTime * MOVE_SCALE)
     }
     bgComposer.render()
     systemComposer.render()
