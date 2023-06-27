@@ -61,9 +61,9 @@ function setupBackground () {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    bgRenderer = new THREE.WebGLRenderer({ canvas })
+    bgRenderer = new THREE.WebGLRenderer({ canvas, alpha: true })
     bgScene = new THREE.Scene()
-    bgScene.background = new THREE.Color(0x000000)
+    bgScene.background = null
 
     const bgGeometry = new THREE.BufferGeometry()
     bgGeometry.setAttribute('position', new THREE.Float32BufferAttribute(bg.star_pos, 3))
@@ -107,9 +107,8 @@ function setupSolarSystem () {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    systemRenderer = new THREE.WebGLRenderer({ canvas })
+    systemRenderer = new THREE.WebGLRenderer({ canvas, alpha: true })
     systemScene = new THREE.Scene()
-    systemScene.background = new THREE.Color(0xFF0000)
 
     systemCamera = new THREE.PerspectiveCamera(CAMERA_PARAMS.fov, CAMERA_PARAMS.aspect,
         CAMERA_PARAMS.near, CAMERA_PARAMS.far)
@@ -118,7 +117,7 @@ function setupSolarSystem () {
     systemCamera.position.z = CAMERA_PARAMS.startPos.z
     systemCamera.lookAt(new THREE.Vector3())
 
-    const geo = new THREE.SphereGeometry(0, SPHERE_PARAMS.width_segments, SPHERE_PARAMS.height_segments)
+    const geo = new THREE.SphereGeometry(SUN.radius(0), SPHERE_PARAMS.width_segments, SPHERE_PARAMS.height_segments)
     const body = new THREE.Mesh(geo, SUN.material)
     systemScene.add(body)
 
@@ -162,9 +161,8 @@ function render () {
         bgControls.moveUp(velocity.y * dTime * MOVE_SCALE)
         bgControls.moveRight(velocity.z * dTime * MOVE_SCALE)
     }
-
-    systemComposer.render()
     bgComposer.render()
+    systemComposer.render()
 }
 
 setup()

@@ -31,7 +31,7 @@ class CelestialBody {
      */
     constructor (location, radius, material, light = null, canvas = null) {
         this.location = location
-        this.diameter = radius
+        this.radius = radius
         this.material = material
         this.light = light
         this.children = []
@@ -65,8 +65,8 @@ class CelestialBody {
     }
 }
 
-const light = new THREE.DirectionalLight(0xFFFFFF, 1)
-light.position.set(-1, 2, 4)
+const light = new THREE.PointLight(0xFFFFFF, 1)
+light.position.set(10, 10, 10)
 const SUN = new CelestialBody(
     time => {
         return new THREE.Vector3(0, 0, 0)
