@@ -8,7 +8,7 @@ import { PointerLockControls } from 'pointerlockcontrols'
 import { SUN } from 'solarsystem'
 
 const TIME_SCALE = 1e3
-const MOVE_SCALE = 1e8
+const MOVE_SCALE = 1e7
 const FRICTION = 1e4
 const ACCELERATION = 1e1
 
@@ -21,8 +21,8 @@ const CAMERA_PARAMS = {
 }
 
 const SPHERE_PARAMS = {
-    width_segments: 32,
-    height_segments: 32
+    widthSegments: 32,
+    heightSegments: 32
 }
 
 let clock
@@ -116,7 +116,7 @@ function setupSolarSystem () {
     camera.position.z = CAMERA_PARAMS.startPos.z
     camera.lookAt(new THREE.Vector3())
 
-    const geo = new THREE.SphereGeometry(SUN.radius(0), SPHERE_PARAMS.width_segments, SPHERE_PARAMS.height_segments)
+    const geo = new THREE.SphereGeometry(SUN.radius(0), SPHERE_PARAMS.widthSegments, SPHERE_PARAMS.heightSegments)
     const body = new THREE.Mesh(geo, SUN.material)
     systemScene.add(body)
 
@@ -147,9 +147,16 @@ function render () {
         velocity.y -= velocity.y * dTime * FRICTION
         velocity.z -= velocity.z * dTime * FRICTION
 
-        direction.x = isForward() - isBackward()
-        direction.y = isUp() - isDown()
-        direction.z = isRight() - isLeft()
+        const cameraDirection = new THREE.Vector3()
+        const movement = new THREE.Vector3(isForward() - isBackward(), isUp() - isDown(), isRight() - isLeft())
+        camera.getWorldDirection(cameraDirection)
+        cameraDirection.x = Math.abs(cameraDirection.x)
+        cameraDirection.y = Math.abs(cameraDirection.y)
+        cameraDirection.z = Math.abs(cameraDirection.z)
+
+        direction.x = cameraDirection.dot(new THREE.Vector3(movement.x, 0, 0))
+        direction.y = cameraDirection.dot(new THREE.Vector3(0, movement.y, 0))
+        direction.z = cameraDirection.dot(new THREE.Vector3(0, 0, movement.z))
         direction.normalize()
 
         velocity.x += direction.x * dTime * ACCELERATION
