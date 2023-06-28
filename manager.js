@@ -52,7 +52,6 @@ function setup () {
     camera.position.x = CAMERA_PARAMS.startPos.x
     camera.position.y = CAMERA_PARAMS.startPos.y
     camera.position.z = CAMERA_PARAMS.startPos.z
-    camera.lookAt(new THREE.Vector3())
 
     document.addEventListener('click', function () {
         controls.lock()
@@ -114,7 +113,7 @@ function setupSolarSystem () {
     camera.position.x = CAMERA_PARAMS.startPos.x
     camera.position.y = CAMERA_PARAMS.startPos.y
     camera.position.z = CAMERA_PARAMS.startPos.z
-    camera.lookAt(new THREE.Vector3())
+    camera.lookAt(new THREE.Vector3(1e-6, 1e-6, 1e-6)) // Not zero, to avoid a singularity
 
     const geo = new THREE.SphereGeometry(SUN.radius(0), SPHERE_PARAMS.widthSegments, SPHERE_PARAMS.heightSegments)
     const body = new THREE.Mesh(geo, SUN.material)
@@ -161,7 +160,7 @@ function render () {
             direction.normalize()
 
             velocity.x += direction.x * dTime * ACCELERATION
-            velocity.y += direction.y * dTime * ACCELERATION
+            velocity.y -= direction.y * dTime * ACCELERATION
             velocity.z += direction.z * dTime * ACCELERATION
         }
         controls.moveForward(velocity.x * dTime * MOVE_SCALE)
