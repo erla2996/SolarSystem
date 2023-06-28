@@ -6,6 +6,7 @@ import {
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const _vector = new Vector3();
+const _vector2 = new Vector3();
 
 const _changeEvent = { type: 'change' };
 const _lockEvent = { type: 'lock' };
@@ -75,14 +76,9 @@ class PointerLockControls extends EventDispatcher {
 
 	moveForward( distance ) {
 
-		// move forward parallel to the xz-plane
-		// assumes camera.up is y-up
-
 		const camera = this.camera;
 
-		_vector.setFromMatrixColumn( camera.matrix, 0 );
-
-		_vector.crossVectors( camera.up, _vector );
+		camera.getWorldDirection( _vector );
 
 		camera.position.addScaledVector( _vector, distance );
 
@@ -99,10 +95,16 @@ class PointerLockControls extends EventDispatcher {
 	}
 
 	moveUp( distance ) {
-		
+
 		const camera = this.camera;
 
-		camera.position.addScaledVector( camera.up, distance );
+		camera.getWorldDirection( _vector );
+
+		_vector2.setFromMatrixColumn( camera.matrix, 0 );
+
+		_vector.cross( _vector2 );
+
+		camera.position.addScaledVector( _vector, distance );
 
 	}
 

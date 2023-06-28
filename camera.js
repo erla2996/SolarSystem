@@ -32,7 +32,7 @@ const onKeyDown = function (e) {
     case 'Space':
         mUp = true
         break
-    case 'ControlRight':
+    case 'ControlLeft':
     case 'KeyE':
         mDown = true
     }

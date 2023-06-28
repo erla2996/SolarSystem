@@ -143,26 +143,27 @@ function render () {
     const dTime = clock.getDelta() / TIME_SCALE
     requestAnimationFrame(render)
     if (controls.isLocked) {
-        velocity.x -= velocity.x * dTime * FRICTION
-        velocity.y -= velocity.y * dTime * FRICTION
-        velocity.z -= velocity.z * dTime * FRICTION
+        velocity.x -= dTime * FRICTION < 1 ? velocity.x * dTime * FRICTION : 0
+        velocity.y -= dTime * FRICTION < 1 ? velocity.y * dTime * FRICTION : 0
+        velocity.z -= dTime * FRICTION < 1 ? velocity.z * dTime * FRICTION : 0
 
-        const cameraDirection = new THREE.Vector3()
         const movement = new THREE.Vector3(isForward() - isBackward(), isUp() - isDown(), isRight() - isLeft())
-        camera.getWorldDirection(cameraDirection)
-        cameraDirection.x = Math.abs(cameraDirection.x)
-        cameraDirection.y = Math.abs(cameraDirection.y)
-        cameraDirection.z = Math.abs(cameraDirection.z)
+        if (movement.lengthSq() > 0) {
+            const cameraDirection = new THREE.Vector3()
+            camera.getWorldDirection(cameraDirection)
+            cameraDirection.x = Math.abs(cameraDirection.x)
+            cameraDirection.y = Math.abs(cameraDirection.y)
+            cameraDirection.z = Math.abs(cameraDirection.z)
 
-        direction.x = cameraDirection.dot(new THREE.Vector3(movement.x, 0, 0))
-        direction.y = cameraDirection.dot(new THREE.Vector3(0, movement.y, 0))
-        direction.z = cameraDirection.dot(new THREE.Vector3(0, 0, movement.z))
-        direction.normalize()
+            direction.x = cameraDirection.dot(new THREE.Vector3(movement.x, 0, 0))
+            direction.y = cameraDirection.dot(new THREE.Vector3(0, movement.y, 0))
+            direction.z = cameraDirection.dot(new THREE.Vector3(0, 0, movement.z))
+            direction.normalize()
 
-        velocity.x += direction.x * dTime * ACCELERATION
-        velocity.y += direction.y * dTime * ACCELERATION
-        velocity.z += direction.z * dTime * ACCELERATION
-
+            velocity.x += direction.x * dTime * ACCELERATION
+            velocity.y += direction.y * dTime * ACCELERATION
+            velocity.z += direction.z * dTime * ACCELERATION
+        }
         controls.moveForward(velocity.x * dTime * MOVE_SCALE)
         controls.moveUp(velocity.y * dTime * MOVE_SCALE)
         controls.moveRight(velocity.z * dTime * MOVE_SCALE)
