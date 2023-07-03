@@ -94,11 +94,31 @@ function setupBackground () {
     controls = new PointerLockControls(camera, canvas)
 }
 
+function addBodyToScene (cb, scene, parentMesh = null) {
+    parentMesh ??= scene
+    if (cb === null || scene === null) {
+        return
+    }
+    const geo = new THREE.SphereGeometry(cb.radius(0), SPHERE_PARAMS.widthSegments, SPHERE_PARAMS.heightSegments)
+    const body = new THREE.Mesh(geo, cb.material)
+
+    if (cb.light !== null) {
+        parentMesh.add(cb.light)
+    }
+    if (cb.children !== null) {
+        const children = cb.getChildren()
+        const cLen = children.length
+        for (let i = 0; i < cLen; i++) {
+            addBodyToScene(children[i], scene, body)
+        }
+    }
+    parentMesh.add(body)
+}
+
 /**
  * Sets up the part of the environment that is used by the solar system(s).
  */
 function setupSolarSystem () {
-    const solarSystem = SUN
     let canvas = SUN.canvas
     canvas ??= document.getElementById('c')
 
@@ -115,19 +135,9 @@ function setupSolarSystem () {
     camera.position.z = CAMERA_PARAMS.startPos.z
     camera.lookAt(new THREE.Vector3(1e-6, 1e-6, 1e-6)) // Not zero, to avoid a singularity
 
-    const geo = new THREE.SphereGeometry(SUN.radius(0), SPHERE_PARAMS.widthSegments, SPHERE_PARAMS.heightSegments)
-    const body = new THREE.Mesh(geo, SUN.material)
-    systemScene.add(body)
-
-    const light = SUN.light
-    systemScene.add(light)
-
-    // TODO: break this out into a function, recurse over all children
-    const children = solarSystem.getChildren()
-    const cLen = children.length
-    for (let i = 0; i < cLen; i++) {
-        continue
-    }
+    addBodyToScene(SUN, systemScene)
+    console.log('bodies added')
+    console.log(systemScene.children)
 
     const renderPass = new RenderPass(systemScene, camera)
     systemComposer = new EffectComposer(systemRenderer)

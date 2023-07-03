@@ -66,7 +66,7 @@ class CelestialBody {
 }
 
 const light = new THREE.PointLight(0xFFFFFF, 1)
-light.position.set(10, 10, 10)
+light.position.set(10, 0, 10)
 const SUN = new CelestialBody(
     time => {
         return new THREE.Vector3(0, 0, 0)
@@ -74,9 +74,22 @@ const SUN = new CelestialBody(
     time => {
         return 1
     },
-    new THREE.MeshPhongMaterial({ color: 0x44aa88 }),
+    new THREE.MeshMatcapMaterial({ color: 0x44aa88 }),
     light,
     document.getElementById('c')
 )
+const MERCURY = new CelestialBody(
+    time => {
+        return new THREE.Vector3(2, 2, 2)
+    },
+    time => {
+        return 1
+    },
+    new THREE.MeshMatcapMaterial({ color: 0x44aa88 }),
+    light,
+    null
+)
 
-export { CelestialBody, SUN }
+SUN.addChild(MERCURY)
+
+export { SUN }
