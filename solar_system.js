@@ -22,6 +22,7 @@ import * as THREE from 'three'
 class CelestialBody {
     /**
      * Constructor for a celestial body.
+     * @param {string} name - Needs to be unique.
      * @param {locationCallback} location - Relative to the parent celestial body
      * @param {diameterCallback} radius - Negative/null iff the celestial body has no physical representation,
      *  and is only used for container/structuring purposes.
@@ -29,7 +30,8 @@ class CelestialBody {
      * @param {THREE.DirectionalLight} [light=null]
      * @param {HTMLCanvasElement} [canvas=null]
      */
-    constructor (location, radius, material, light = null, canvas = null) {
+    constructor (name, location, radius, material, light = null, canvas = null) {
+        this.name = name
         this.location = location
         this.radius = radius
         this.material = material
@@ -66,27 +68,28 @@ class CelestialBody {
 }
 
 const light = new THREE.PointLight(0xFFFFFF, 1)
-light.position.set(10, 0, 10)
 const SUN = new CelestialBody(
+    'SUN',
     time => {
         return new THREE.Vector3(0, 0, 0)
     },
     time => {
         return 1
     },
-    new THREE.MeshMatcapMaterial({ color: 0x44aa88 }),
+    new THREE.MeshStandardMaterial({ color: 0xFF0000, emissive: 0xFFFFFF, emissiveIntensity: 0.2 }),
     light,
     document.getElementById('c')
 )
 const MERCURY = new CelestialBody(
+    'MERCURY',
     time => {
-        return new THREE.Vector3(2, 2, 2)
+        return new THREE.Vector3(3, 1 + Math.sin(time), 3)
     },
     time => {
-        return 1
+        return 0.5
     },
-    new THREE.MeshMatcapMaterial({ color: 0x44aa88 }),
-    light,
+    new THREE.MeshStandardMaterial({ color: 0xFF0000 }),
+    null,
     null
 )
 

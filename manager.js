@@ -7,9 +7,9 @@ import { bindListeners, isBackward, isDown, isForward, isLeft, isRight, isUp } f
 import { PointerLockControls } from 'pointerlockcontrols'
 import { SUN } from 'solarsystem'
 
-const TIME_SCALE = 1e3
-const MOVE_SCALE = 1e7
-const FRICTION = 1e4
+const TIME_SCALE = 1e0
+const MOVE_SCALE = 7 * 1e0
+const FRICTION = 1e1
 const ACCELERATION = 1e1
 
 const CAMERA_PARAMS = {
@@ -103,6 +103,12 @@ function setupBackground () {
     controls = new PointerLockControls(camera, canvas)
 }
 
+/**
+ * Recursively adds the passed celestial body and its children to the passed scene
+ * @param {CelestialBody} cb
+ * @param {THREE.Scene} scene
+ * @param {THREE.Mesh} [parentMesh=null] used if the cb should be the child of another mesh
+ */
 function addBodyToScene (cb, scene, parentMesh = null) {
     parentMesh ??= scene
     if (cb === null || scene === null) {
@@ -110,8 +116,11 @@ function addBodyToScene (cb, scene, parentMesh = null) {
     }
     const geo = new THREE.SphereGeometry(cb.radius(0), SPHERE_PARAMS.widthSegments, SPHERE_PARAMS.heightSegments)
     const body = new THREE.Mesh(geo, cb.material)
+    const cbLoc = cb.location(0)
+    body.position.set(cbLoc.x, cbLoc.y, cbLoc.z)
 
     if (cb.light !== null) {
+        cb.light.position.set(cbLoc.x, cbLoc.y, cbLoc.z)
         parentMesh.add(cb.light)
     }
     if (cb.children !== null) {
@@ -121,6 +130,7 @@ function addBodyToScene (cb, scene, parentMesh = null) {
             addBodyToScene(children[i], scene, body)
         }
     }
+    body.name = cb.name
     parentMesh.add(body)
 }
 
@@ -150,6 +160,19 @@ function setupSolarSystem () {
     systemComposer = new EffectComposer(systemRenderer)
     systemComposer.addPass(renderPass)
     systemComposer.setPixelRatio(window.devicePixelRatio)
+}
+
+function renderBody (cb, mesh, time, parent = null) {
+    parent ??= mesh
+    const cbLoc = parent.localToWorld(cb.location(time))
+    mesh.position.set(cbLoc.x, cbLoc.y, cbLoc.z)
+    if (cb.children !== null) {
+        const children = cb.getChildren()
+        const cLen = children.length
+        for (let i = 0; i < cLen; i++) {
+            renderBody(children[i], systemScene.getObjectByName(children[i].name), time, mesh)
+        }
+    }
 }
 
 /**
@@ -184,6 +207,8 @@ function render () {
         controls.moveUp(velocity.y * dTime * MOVE_SCALE)
         controls.moveRight(velocity.z * dTime * MOVE_SCALE)
     }
+    renderBody(SUN, systemScene.getObjectByName(SUN.name), clock.getElapsedTime() / TIME_SCALE)
+
     bgComposer.render()
     systemComposer.render()
 }
