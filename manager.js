@@ -57,6 +57,15 @@ function setup () {
         controls.lock()
     })
     bindListeners()
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight
+        camera.updateProjectionMatrix()
+        systemRenderer.setSize(window.innerWidth, window.innerHeight)
+        bgRenderer.setSize(window.innerWidth, window.innerHeight)
+    },
+    false
+    )
 }
 
 /**
@@ -136,8 +145,6 @@ function setupSolarSystem () {
     camera.lookAt(new THREE.Vector3(1e-6, 1e-6, 1e-6)) // Not zero, to avoid a singularity
 
     addBodyToScene(SUN, systemScene)
-    console.log('bodies added')
-    console.log(systemScene.children)
 
     const renderPass = new RenderPass(systemScene, camera)
     systemComposer = new EffectComposer(systemRenderer)
