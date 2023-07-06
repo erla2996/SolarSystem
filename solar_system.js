@@ -67,6 +67,18 @@ class CelestialBody {
     }
 }
 
+const textures = {
+    SUN: new THREE.TextureLoader().load('images/2k_sun.jpg'),
+    MERCURY: new THREE.TextureLoader().load('images/2k_mercury.jpg'),
+    VENUS: new THREE.TextureLoader().load('images/2k_venus_atmosphere.jpg'),
+    EARTH: new THREE.TextureLoader().load('images/2k_earth_daymap.jpg'),
+    MARS: new THREE.TextureLoader().load('images/2k_mars.jpg'),
+    JUPITER: new THREE.TextureLoader().load('images/2k_jupiter.jpg'),
+    SATURN: new THREE.TextureLoader().load('images/2k_saturn.jpg'),
+    URANUS: new THREE.TextureLoader().load('images/uranus.jpg'),
+    NEPTUNE: new THREE.TextureLoader().load('images/neptune.jpg')
+}
+
 const light = new THREE.PointLight(0xFFFFFF, 1)
 const SUN = new CelestialBody(
     'SUN',
@@ -76,7 +88,7 @@ const SUN = new CelestialBody(
     time => {
         return 1
     },
-    new THREE.MeshStandardMaterial({ color: 0xFF0000, emissive: 0xFFFFFF, emissiveIntensity: 0.2 }),
+    new THREE.MeshBasicMaterial({ map: textures.SUN }),
     light,
     document.getElementById('c')
 )
@@ -88,7 +100,7 @@ const MERCURY = new CelestialBody(
     time => {
         return 0.5
     },
-    new THREE.MeshStandardMaterial({ color: 0xFF0000 }),
+    new THREE.MeshStandardMaterial({ map: textures.MERCURY }),
     null,
     null
 )
