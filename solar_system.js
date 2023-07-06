@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { getPlanetPosition } from 'vsop87'
 
 /**
  * Callback type for a celestial body's location, as a function of time.
@@ -78,6 +79,7 @@ const textures = {
     URANUS: new THREE.TextureLoader().load('images/2k_uranus.jpg'),
     NEPTUNE: new THREE.TextureLoader().load('images/2k_neptune.jpg')
 }
+const SCALE = 1e3
 
 const light = new THREE.PointLight(0xFFFFFF, 1)
 const SUN = new CelestialBody(
@@ -86,7 +88,7 @@ const SUN = new CelestialBody(
         return new THREE.Vector3(0, 0, 0)
     },
     time => {
-        return 1
+        return SCALE * 0.00465047
     },
     new THREE.MeshBasicMaterial({ map: textures.SUN }),
     light,
@@ -95,10 +97,11 @@ const SUN = new CelestialBody(
 const MERCURY = new CelestialBody(
     'MERCURY',
     time => {
-        return new THREE.Vector3(3, 1 + Math.sin(time), 3)
+        const coords = getPlanetPosition('MERCURY', time + 2451544.5)
+        return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
-        return 0.25
+        return SCALE * 1.63083872 * 1e-5
     },
     new THREE.MeshStandardMaterial({ map: textures.MERCURY }),
     null,
@@ -107,10 +110,11 @@ const MERCURY = new CelestialBody(
 const VENUS = new CelestialBody(
     'VENUS',
     time => {
-        return new THREE.Vector3(5, Math.sin(time / 2), 5)
+        const coords = getPlanetPosition('VENUS', time + 2451544.5)
+        return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
-        return 0.5
+        return SCALE * 4.04537843 * 1e-5
     },
     new THREE.MeshStandardMaterial({ map: textures.VENUS }),
     null,
@@ -119,10 +123,11 @@ const VENUS = new CelestialBody(
 const EARTH = new CelestialBody(
     'EARTH',
     time => {
-        return new THREE.Vector3(7, Math.sin(2 * time), 7)
+        const coords = getPlanetPosition('EARTH', time + 2451544.5)
+        return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
-        return 0.5
+        return SCALE * 4.25875 * 1e-5
     },
     new THREE.MeshStandardMaterial({ map: textures.EARTH }),
     null,
@@ -131,10 +136,11 @@ const EARTH = new CelestialBody(
 const MARS = new CelestialBody(
     'MARS',
     time => {
-        return new THREE.Vector3(9, Math.sin(2 * time), 9)
+        const coords = getPlanetPosition('MARS', time + 2451544.5)
+        return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
-        return 0.25
+        return SCALE * 2.26574081 * 1e-5
     },
     new THREE.MeshStandardMaterial({ map: textures.MARS }),
     null,
@@ -143,10 +149,11 @@ const MARS = new CelestialBody(
 const JUPITER = new CelestialBody(
     'JUPITER',
     time => {
-        return new THREE.Vector3(11, Math.sin(2 * time), 11)
+        const coords = getPlanetPosition('JUPITER', time + 2451544.5)
+        return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
-        return 0.8
+        return SCALE * 0.00046732617
     },
     new THREE.MeshStandardMaterial({ map: textures.JUPITER }),
     null,
@@ -155,10 +162,11 @@ const JUPITER = new CelestialBody(
 const SATURN = new CelestialBody(
     'SATURN',
     time => {
-        return new THREE.Vector3(13, Math.sin(2 * time), 13)
+        const coords = getPlanetPosition('SATURN', time + 2451544.5)
+        return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
-        return 0.7
+        return SCALE * 0.00038925688
     },
     new THREE.MeshStandardMaterial({ map: textures.SATURN }),
     null,
@@ -167,10 +175,11 @@ const SATURN = new CelestialBody(
 const URANUS = new CelestialBody(
     'URANUS',
     time => {
-        return new THREE.Vector3(15, Math.sin(2 * time), 15)
+        const coords = getPlanetPosition('URANUS', time + 2451544.5)
+        return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
-        return 0.5
+        return SCALE * 0.0001695345
     },
     new THREE.MeshStandardMaterial({ map: textures.URANUS }),
     null,
@@ -179,10 +188,11 @@ const URANUS = new CelestialBody(
 const NEPTUNE = new CelestialBody(
     'NEPTUNE',
     time => {
-        return new THREE.Vector3(17, Math.sin(2 * time), 17)
+        const coords = getPlanetPosition('NEPTUNE', time + 2451544.5)
+        return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
-        return 0.5
+        return SCALE * 0.0001645879
     },
     new THREE.MeshStandardMaterial({ map: textures.NEPTUNE }),
     null,

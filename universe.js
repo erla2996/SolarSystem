@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-const N = 1e5
+const N = 1e3
 const DIST = 1e3
 const UNIFORMS = { pointTexture: { value: new THREE.TextureLoader().load('images/star.png') } }
 
