@@ -75,8 +75,8 @@ const textures = {
     MARS: new THREE.TextureLoader().load('images/2k_mars.jpg'),
     JUPITER: new THREE.TextureLoader().load('images/2k_jupiter.jpg'),
     SATURN: new THREE.TextureLoader().load('images/2k_saturn.jpg'),
-    URANUS: new THREE.TextureLoader().load('images/uranus.jpg'),
-    NEPTUNE: new THREE.TextureLoader().load('images/neptune.jpg')
+    URANUS: new THREE.TextureLoader().load('images/2k_uranus.jpg'),
+    NEPTUNE: new THREE.TextureLoader().load('images/2k_neptune.jpg')
 }
 
 const light = new THREE.PointLight(0xFFFFFF, 1)
@@ -98,13 +98,104 @@ const MERCURY = new CelestialBody(
         return new THREE.Vector3(3, 1 + Math.sin(time), 3)
     },
     time => {
-        return 0.5
+        return 0.25
     },
     new THREE.MeshStandardMaterial({ map: textures.MERCURY }),
     null,
     null
 )
+const VENUS = new CelestialBody(
+    'VENUS',
+    time => {
+        return new THREE.Vector3(5, Math.sin(time / 2), 5)
+    },
+    time => {
+        return 0.5
+    },
+    new THREE.MeshStandardMaterial({ map: textures.VENUS }),
+    null,
+    null
+)
+const EARTH = new CelestialBody(
+    'EARTH',
+    time => {
+        return new THREE.Vector3(7, Math.sin(2 * time), 7)
+    },
+    time => {
+        return 0.5
+    },
+    new THREE.MeshStandardMaterial({ map: textures.EARTH }),
+    null,
+    null
+)
+const MARS = new CelestialBody(
+    'MARS',
+    time => {
+        return new THREE.Vector3(9, Math.sin(2 * time), 9)
+    },
+    time => {
+        return 0.25
+    },
+    new THREE.MeshStandardMaterial({ map: textures.MARS }),
+    null,
+    null
+)
+const JUPITER = new CelestialBody(
+    'JUPITER',
+    time => {
+        return new THREE.Vector3(11, Math.sin(2 * time), 11)
+    },
+    time => {
+        return 0.8
+    },
+    new THREE.MeshStandardMaterial({ map: textures.JUPITER }),
+    null,
+    null
+)
+const SATURN = new CelestialBody(
+    'SATURN',
+    time => {
+        return new THREE.Vector3(13, Math.sin(2 * time), 13)
+    },
+    time => {
+        return 0.7
+    },
+    new THREE.MeshStandardMaterial({ map: textures.SATURN }),
+    null,
+    null
+)
+const URANUS = new CelestialBody(
+    'URANUS',
+    time => {
+        return new THREE.Vector3(15, Math.sin(2 * time), 15)
+    },
+    time => {
+        return 0.5
+    },
+    new THREE.MeshStandardMaterial({ map: textures.URANUS }),
+    null,
+    null
+)
+const NEPTUNE = new CelestialBody(
+    'NEPTUNE',
+    time => {
+        return new THREE.Vector3(17, Math.sin(2 * time), 17)
+    },
+    time => {
+        return 0.5
+    },
+    new THREE.MeshStandardMaterial({ map: textures.NEPTUNE }),
+    null,
+    null
+)
 
 SUN.addChild(MERCURY)
+SUN.addChild(VENUS)
+SUN.addChild(EARTH)
+SUN.addChild(MARS)
+SUN.addChild(JUPITER)
+SUN.addChild(SATURN)
+SUN.addChild(URANUS)
+SUN.addChild(NEPTUNE)
 
 export { SUN }
