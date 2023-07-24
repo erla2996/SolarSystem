@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Own, project-specific additions
 hello_cube/**
+
+# Own, python virtual environment
+env/**

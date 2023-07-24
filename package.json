@@ -1,6 +1,9 @@
 {
   "dependencies": {
-    "espree": "^9.5.2"
+    "browserfs": "^1.4.3",
+    "browserify": "^17.0.0",
+    "espree": "^9.5.2",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "eslint": "^8.43.0",

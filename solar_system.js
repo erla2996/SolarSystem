@@ -80,6 +80,7 @@ const textures = {
     NEPTUNE: new THREE.TextureLoader().load('images/2k_neptune.jpg')
 }
 const SCALE = 1e3
+const TIME_SCALE = 1e0
 
 const light = new THREE.PointLight(0xFFFFFF, 1)
 const SUN = new CelestialBody(
@@ -97,7 +98,7 @@ const SUN = new CelestialBody(
 const MERCURY = new CelestialBody(
     'MERCURY',
     time => {
-        const coords = getPlanetPosition('MERCURY', time + 2451544.5)
+        const coords = getPlanetPosition('MERCURY', time * TIME_SCALE)
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
@@ -110,7 +111,7 @@ const MERCURY = new CelestialBody(
 const VENUS = new CelestialBody(
     'VENUS',
     time => {
-        const coords = getPlanetPosition('VENUS', time + 2451544.5)
+        const coords = getPlanetPosition('VENUS', time * TIME_SCALE)
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
@@ -123,7 +124,7 @@ const VENUS = new CelestialBody(
 const EARTH = new CelestialBody(
     'EARTH',
     time => {
-        const coords = getPlanetPosition('EARTH', time + 2451544.5)
+        const coords = getPlanetPosition('EARTH', time * TIME_SCALE)
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
@@ -136,7 +137,7 @@ const EARTH = new CelestialBody(
 const MARS = new CelestialBody(
     'MARS',
     time => {
-        const coords = getPlanetPosition('MARS', time + 2451544.5)
+        const coords = getPlanetPosition('MARS', time * TIME_SCALE)
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
@@ -149,7 +150,7 @@ const MARS = new CelestialBody(
 const JUPITER = new CelestialBody(
     'JUPITER',
     time => {
-        const coords = getPlanetPosition('JUPITER', time + 2451544.5)
+        const coords = getPlanetPosition('JUPITER', time * TIME_SCALE)
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
@@ -162,7 +163,7 @@ const JUPITER = new CelestialBody(
 const SATURN = new CelestialBody(
     'SATURN',
     time => {
-        const coords = getPlanetPosition('SATURN', time + 2451544.5)
+        const coords = getPlanetPosition('SATURN', time * TIME_SCALE)
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
@@ -175,7 +176,7 @@ const SATURN = new CelestialBody(
 const URANUS = new CelestialBody(
     'URANUS',
     time => {
-        const coords = getPlanetPosition('URANUS', time + 2451544.5)
+        const coords = getPlanetPosition('URANUS', time * TIME_SCALE)
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {
@@ -188,7 +189,7 @@ const URANUS = new CelestialBody(
 const NEPTUNE = new CelestialBody(
     'NEPTUNE',
     time => {
-        const coords = getPlanetPosition('NEPTUNE', time + 2451544.5)
+        const coords = getPlanetPosition('NEPTUNE', time * TIME_SCALE)
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[1], SCALE * coords[2])
     },
     time => {

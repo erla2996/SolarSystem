@@ -6,7 +6,6 @@ import { EffectComposer } from 'effectcomposer'
 import { bindListeners, isBackward, isDown, isForward, isLeft, isRight, isUp } from 'camera'
 import { PointerLockControls } from 'pointerlockcontrols'
 import { SUN } from 'solarsystem'
-import 'vsop87'
 
 const TIME_SCALE = 1e0
 const MOVE_SCALE = 5 * 1e0
