@@ -7,6 +7,8 @@ import { bindListeners, isBackward, isDown, isForward, isLeft, isRight, isUp } f
 import { PointerLockControls } from 'pointerlockcontrols'
 import { SUN } from 'solarsystem'
 
+const FPSUPDATEINTERVAL = 0.2
+
 const TIME_SCALE = 1e0
 const MOVE_SCALE = 5 * 1e0
 const FRICTION = 1e1
@@ -24,6 +26,9 @@ const SPHERE_PARAMS = {
     widthSegments: 32,
     heightSegments: 32
 }
+
+const fpsCounter = document.getElementById('fpsCounter')
+const fpsClock = new THREE.Clock()
 
 let clock
 let velocity
@@ -175,12 +180,21 @@ function renderBody (cb, mesh, time, parent = null) {
     }
 }
 
+function renderFPS (dTime) {
+    if (fpsClock.getElapsedTime() > FPSUPDATEINTERVAL) {
+        fpsClock.start()
+        const fps = 'FPS: ' + (1 / dTime).toFixed(0)
+        fpsCounter.innerHTML = fps
+    }
+}
+
 /**
  * render is called each animation frame, and advances the state of the universe.
  */
 function render () {
     const dTime = clock.getDelta() / TIME_SCALE
     requestAnimationFrame(render)
+    renderFPS(dTime)
     if (controls.isLocked) {
         velocity.x -= dTime * FRICTION < 1 ? velocity.x * dTime * FRICTION : 0
         velocity.y -= dTime * FRICTION < 1 ? velocity.y * dTime * FRICTION : 0
