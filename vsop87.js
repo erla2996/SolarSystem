@@ -18,7 +18,6 @@ const PRECOMPUTED = [
     -1,
     -1
 ]
-
 const infiles = [
     'vsop87/VSOP87C.mer',
     'vsop87/VSOP87C.ven',
@@ -41,6 +40,11 @@ const planetIndex = {
     NEPTUNE: 7
 }
 
+/**
+ * Reads a file and returns its contents.
+ * @param {string} fname The full name or name relative the current directory of the file to read.
+ * @returns {string[]} The contents of the file, each element of the array containing a line of the file.
+ */
 async function readfile (fname) {
     const indata = await fetch(fname)
         .then((response) => {
@@ -55,6 +59,8 @@ async function readfile (fname) {
     return indata.split('\n')
 }
 
+// precomputedData is an [int[]] containing the precomputed xyz-positions of the planets
+// PRECOMPUTED is an int[] containing the number of precomputed values (+1) for each planet
 const precomputedData = new Array(planetIndex.length)
 for (let i = 0; i < precomputedData.length; i++) {
     precomputedData[i] = await readfile(precomputedFiles[i])
@@ -62,11 +68,17 @@ for (let i = 0; i < precomputedData.length; i++) {
     PRECOMPUTED[i] = parseInt(header.split(' ').filter(x => { return !isNaN(x) }))
 }
 
+// indata is a [string[]], containing the vsop87 data of each planet
 const indata = [planetIndex.length]
 for (let i = 0; i < infiles.length; i++) {
     indata[i] = readfile(infiles[i])
 }
 
+/**
+ * Parses a line of vsop87 data and returns the coefficients (three last floats) of the line.
+ * @param {string} line
+ * @returns {Number[]} Coefficients [A, B, C]
+ */
 function extractCoefficients (line) {
     return line.split(' ').filter(x => {
         return x.length > 0
@@ -75,11 +87,23 @@ function extractCoefficients (line) {
     })
 }
 
+/**
+ * Computes the term A * cos(B + CT)
+ * @param {*} line A line of vsop87-data, which contains A, B, C as its last 3 numbers.
+ * @param {*} T T := (JDE - 2451545) / 365250
+ * @returns {Number} The computed term
+ */
 function computeTerm (line, T) {
     const c = extractCoefficients(line)
     return c[0] * Math.cos(c[1] + c[2] * T)
 }
 
+/**
+ * Looks up the precomputed xyz-position of the planet with the passed index.
+ * @param {*} pI The planet-index of the planet to look up.
+ * @param {*} jde The JDE at which to look up the position of the planet.
+ * @returns {Number[]} [x, y, z] - position of the planet.
+ */
 function lookupPrecomputed (pI, jde) {
     jde = Math.floor(jde)
     const line = precomputedData[pI][jde].split(' ')
@@ -94,7 +118,7 @@ function lookupPrecomputed (pI, jde) {
  * Uses VSOP87 to approximate the position.
  * @param {string} planetName
  * @param {number} jde
- * @returns {number[]} Array of length 3, containing (x,y,z)-coordinates
+ * @returns {number[]} Array of length 3, containing xyz-coordinates
  */
 function getPlanetPosition (planetName, jde) {
     const pI = planetIndex[planetName]
