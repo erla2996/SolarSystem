@@ -79,7 +79,7 @@ const textures = {
     URANUS: new THREE.TextureLoader().load('images/2k_uranus.jpg'),
     NEPTUNE: new THREE.TextureLoader().load('images/2k_neptune.jpg')
 }
-const SCALE = 1e3
+const SCALE = 1e2
 const TIME_SCALE = 1e0
 
 const light = new THREE.PointLight(0xFFFFFF, 1)

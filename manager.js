@@ -30,6 +30,8 @@ const SPHERE_PARAMS = {
 const fpsCounter = document.getElementById('fpsCounter')
 const fpsClock = new THREE.Clock()
 
+const infoPanel = document.getElementById('infoPanel')
+
 let clock
 let velocity
 let direction
@@ -180,12 +182,53 @@ function renderBody (cb, mesh, time, parent = null) {
     }
 }
 
+/**
+ * Renders the FPS counter
+ * @param {Number} dTime
+ */
 function renderFPS (dTime) {
     if (fpsClock.getElapsedTime() > FPSUPDATEINTERVAL) {
         fpsClock.start()
         const fps = 'FPS: ' + (1 / dTime).toFixed(0)
         fpsCounter.innerHTML = fps
     }
+}
+
+function cbCoordinateInfo (cb, cbMesh) {
+    let retstring = ''
+    retstring += '<p>' + cb.name + ': <span class="ralign">'
+    const pos = cbMesh.position
+    retstring += '(' + pos.x.toFixed(2) + ', ' +
+        pos.y.toFixed(2) + ', ' +
+        pos.z.toFixed(2) +
+        ')</span></p><br>'
+    if (cb.children !== null) {
+        const children = cb.getChildren()
+        for (let i = 0; i < children.length; i++) {
+            const c = children[i]
+            retstring += cbCoordinateInfo(c, systemScene.getObjectByName(children[i].name))
+        }
+    }
+    return retstring
+}
+
+/**
+ * Renders the panel with info about the starsystem and the celestial bodies of the system
+ * @param {Number} dTime
+ */
+function renderInfoPanel (dTime) {
+    let infoContent = ''
+    const time = clock.getElapsedTime()
+    infoContent += '<h2>Solarsystem information:</h2><br>'
+    infoContent += '<p>Current time: <span class="ralign">' + parseInt(time) + ' days</span></p><br>'
+    infoContent += '<p>Camera coordinates: <span class="ralign">' +
+        '(' + camera.position.x.toFixed(2) + ', ' +
+        camera.position.y.toFixed(2) + ', ' +
+        camera.position.z.toFixed(2) +
+        ')</span></p><br>'
+    infoContent += '<h3>Coordinates of objects: </h3><br>'
+    infoContent += cbCoordinateInfo(SUN, systemScene.getObjectByName(SUN.name))
+    infoPanel.innerHTML = infoContent
 }
 
 /**
@@ -195,6 +238,7 @@ function render () {
     const dTime = clock.getDelta() / TIME_SCALE
     requestAnimationFrame(render)
     renderFPS(dTime)
+    renderInfoPanel(dTime)
     if (controls.isLocked) {
         velocity.x -= dTime * FRICTION < 1 ? velocity.x * dTime * FRICTION : 0
         velocity.y -= dTime * FRICTION < 1 ? velocity.y * dTime * FRICTION : 0

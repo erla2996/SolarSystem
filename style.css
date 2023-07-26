@@ -3,12 +3,24 @@ body {
     padding: 0;
 }
 
+h2 {
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+}
+
 canvas {
     position: absolute;
 }
 
 div {
     position: absolute;
+}
+
+p {
+    margin: 0;
 }
 
 #background {
@@ -29,4 +41,22 @@ div {
     z-index: 2;
     color: white;
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    top: 20px;
+    left: 20px;
+}
+
+#infoPanel {
+    z-index: 2;
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    background-color: rgba(0, 0, 255, 0.5);
+    padding: 20px;
+    top: 20px;
+    right: 20px;
+    border-radius: 20px;
+}
+
+.ralign {
+    text-align: right;
+    float: right;
 }

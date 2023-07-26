@@ -107,9 +107,9 @@ function computeTerm (line, T) {
 function lookupPrecomputed (pI, jde) {
     jde = Math.floor(jde)
     const line = precomputedData[pI][jde].split(' ')
-    const x = parseInt(line[0])
-    const y = parseInt(line[1])
-    const z = parseInt(line[2])
+    const x = Number(line[0])
+    const y = Number(line[1])
+    const z = Number(line[2])
     return [x, y, z]
 }
 
