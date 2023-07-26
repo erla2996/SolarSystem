@@ -65,7 +65,7 @@ const onKeyUp = function (e) {
     case 'Space':
         mUp = false
         break
-    case 'ControlRight':
+    case 'ControlLeft':
     case 'KeyE':
         mDown = false
     }
