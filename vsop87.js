@@ -105,11 +105,13 @@ function computeTerm (line, T) {
  * @returns {Number[]} [x, y, z] - position of the planet.
  */
 function lookupPrecomputed (pI, jde) {
-    jde = Math.floor(jde)
-    const line = precomputedData[pI][jde].split(' ')
-    const x = Number(line[0])
-    const y = Number(line[1])
-    const z = Number(line[2])
+    const line1 = precomputedData[pI][Math.floor(jde)].split(' ')
+    const line2 = precomputedData[pI][Math.ceil(jde)].split(' ')
+    const frac = (jde % 1).toFixed(8) // .toFixed avoids non-exact numbers,
+    // see comments of https://stackoverflow.com/a/4512317
+    const x = Number(line1[0]) + frac * (line2[0] - line1[0])
+    const y = Number(line1[1]) + frac * (line2[1] - line1[1])
+    const z = Number(line1[2]) + frac * (line2[2] - line1[2])
     return [x, y, z]
 }
 
@@ -122,7 +124,7 @@ function lookupPrecomputed (pI, jde) {
  */
 function getPlanetPosition (planetName, jde) {
     const pI = planetIndex[planetName]
-    if (PRECOMPUTED[pI] < jde) {
+    if (PRECOMPUTED[pI] < jde + 1) {
         const sums = [
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
