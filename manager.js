@@ -28,6 +28,8 @@ const SPHERE_PARAMS = {
     heightSegments: 32
 }
 
+const selectedBodies = []
+
 const fpsCounter = document.getElementById('fpsCounter')
 const fpsClock = new THREE.Clock()
 
@@ -115,13 +117,8 @@ function setupBackground () {
  * Recursively adds the passed celestial body and its children to the passed scene
  * @param {CelestialBody} cb
  * @param {THREE.Scene} scene
- * @param {THREE.Mesh} [parentMesh=null] used if the cb should be the child of another mesh
  */
-function addBodyToScene (cb, scene, parentMesh = null) {
-    parentMesh ??= scene
-    if (cb === null || scene === null) {
-        return
-    }
+function addBodyToScene (cb, scene) {
     const geo = new THREE.SphereGeometry(cb.radius(0), SPHERE_PARAMS.widthSegments, SPHERE_PARAMS.heightSegments)
     const body = new THREE.Mesh(geo, cb.material)
     const cbLoc = cb.location(0)
@@ -129,7 +126,7 @@ function addBodyToScene (cb, scene, parentMesh = null) {
 
     if (cb.light !== null) {
         cb.light.position.set(cbLoc.x, cbLoc.y, cbLoc.z)
-        parentMesh.add(cb.light)
+        scene.add(cb.light)
     }
     if (cb.children !== null) {
         const children = cb.getChildren()
@@ -139,7 +136,21 @@ function addBodyToScene (cb, scene, parentMesh = null) {
         }
     }
     body.name = cb.name
-    parentMesh.add(body)
+    scene.add(body)
+}
+
+/**
+ * Selects the passed celestial body, and all of its children, using recursion.
+ * @param {CelestialBody} root The root object of the tree of objects to select
+ */
+function selectBodiesRecursively (root) {
+    selectedBodies.push(systemScene.getObjectByName(root.name))
+    const children = root.getChildren()
+    if (children !== null && children.length > 0) {
+        for (let i = 0; i < children.length; i++) {
+            selectBodiesRecursively(root.children[i])
+        }
+    }
 }
 
 /**
@@ -167,7 +178,8 @@ function setupSolarSystem () {
     const renderPass = new RenderPass(systemScene, camera)
     const outlinePass = new OutlinePass(new THREE.Vector2(canvas.innerWidth, canvas.innerHeight), systemScene, camera)
     // OutlinePass adds outline to child objects as well, so only the root node of the starsystem needs to be added
-    outlinePass.selectedObjects = [systemScene.getObjectByName('SUN')]
+    selectBodiesRecursively(SUN)
+    outlinePass.selectedObjects = selectedBodies
     systemComposer = new EffectComposer(systemRenderer)
     systemComposer.addPass(renderPass)
     systemComposer.addPass(outlinePass)
@@ -179,12 +191,11 @@ function setupSolarSystem () {
  * @param {CelestialBody} cb
  * @param {THREE.Mesh} mesh
  * @param {Number} time
- * @param {CelestialBody} parent
  */
-function renderBody (cb, mesh, time, parent = null) {
-    parent ??= mesh
-    const cbLoc = parent.localToWorld(cb.location(time))
+function renderBody (cb, mesh, time) {
+    const cbLoc = cb.location(time)
     mesh.position.set(cbLoc.x, cbLoc.y, cbLoc.z)
+    mesh.setRotationFromAxisAngle(cb.up, cb.rotation(time))
     if (cb.children !== null) {
         const children = cb.getChildren()
         const cLen = children.length
@@ -243,7 +254,7 @@ function renderInfoPanel () {
         camera.position.y.toFixed(2) + ', ' +
         camera.position.z.toFixed(2) +
         ')</span></p><br>'
-    infoContent += '<h3>Coordinates of objects: </h3><br>'
+    infoContent += '<h3>Current coordinates: </h3><br>'
     infoContent += cbCoordinateInfo(SUN, systemScene.getObjectByName(SUN.name))
     infoPanel.innerHTML = infoContent
 }
