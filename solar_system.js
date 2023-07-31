@@ -50,12 +50,11 @@ class CelestialBody {
     }
 
     /**
-     * Inserts newChild into the array of the object's children.
+     * Pushes newChild onto the array of the object's children.
      * @param {CelestialBody} newChild
-     * @param {number} index
      */
-    addChild (newChild, index = -1) {
-        this.children.splice(index, 0, newChild)
+    addChild (newChild) {
+        this.children.push(newChild)
     }
 
     /**

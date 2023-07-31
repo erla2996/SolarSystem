@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 const N = 1e3
-const DIST = 1e3
+const DIST = 1e4
 const UNIFORMS = { pointTexture: { value: new THREE.TextureLoader().load('images/star.png') } }
 
 /**
@@ -44,7 +44,7 @@ for (let i = 0; i < N; i++) {
     positions.push(Math.sin(phi) * Math.cos(theta) * DIST) // x
     positions.push(Math.sin(phi) * Math.sin(theta) * DIST) // y
     positions.push(Math.cos(phi) * DIST) // z
-    sizes.push(Math.random() * 20)
+    sizes.push(Math.random() * 200)
 }
 
 const BACKGROUND = new Background(

@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { BACKGROUND } from 'universe'
 import { RenderPass } from 'renderpass'
+import { OutlinePass } from 'outlinepass'
 import { UnrealBloomPass } from 'unrealbloompass'
 import { EffectComposer } from 'effectcomposer'
 import { bindListeners, isBackward, isDown, isForward, isLeft, isRight, isUp } from 'camera'
@@ -164,11 +165,22 @@ function setupSolarSystem () {
     addBodyToScene(SUN, systemScene)
 
     const renderPass = new RenderPass(systemScene, camera)
+    const outlinePass = new OutlinePass(new THREE.Vector2(canvas.innerWidth, canvas.innerHeight), systemScene, camera)
+    // OutlinePass adds outline to child objects as well, so only the root node of the starsystem needs to be added
+    outlinePass.selectedObjects = [systemScene.getObjectByName('SUN')]
     systemComposer = new EffectComposer(systemRenderer)
     systemComposer.addPass(renderPass)
+    systemComposer.addPass(outlinePass)
     systemComposer.setPixelRatio(window.devicePixelRatio)
 }
 
+/**
+ * Sets the position of the passed celestial body, and all of its children, for the passed time.
+ * @param {CelestialBody} cb
+ * @param {THREE.Mesh} mesh
+ * @param {Number} time
+ * @param {CelestialBody} parent
+ */
 function renderBody (cb, mesh, time, parent = null) {
     parent ??= mesh
     const cbLoc = parent.localToWorld(cb.location(time))
@@ -194,6 +206,12 @@ function renderFPS (dTime) {
     }
 }
 
+/**
+ * Generates an html-string with information about the passed celestial body's current coordinates.
+ * @param {CelestialBody} cb
+ * @param {THREE.Mesh} cbMesh
+ * @returns {string}
+ */
 function cbCoordinateInfo (cb, cbMesh) {
     let retstring = ''
     retstring += '<p>' + cb.name + ': <span class="ralign">'
@@ -214,9 +232,8 @@ function cbCoordinateInfo (cb, cbMesh) {
 
 /**
  * Renders the panel with info about the starsystem and the celestial bodies of the system
- * @param {Number} dTime
  */
-function renderInfoPanel (dTime) {
+function renderInfoPanel () {
     let infoContent = ''
     const time = clock.getElapsedTime()
     infoContent += '<h2>Solarsystem information:</h2><br>'
@@ -238,7 +255,7 @@ function render () {
     const dTime = clock.getDelta() / TIME_SCALE
     requestAnimationFrame(render)
     renderFPS(dTime)
-    renderInfoPanel(dTime)
+    renderInfoPanel()
     if (controls.isLocked) {
         velocity.x -= dTime * FRICTION < 1 ? velocity.x * dTime * FRICTION : 0
         velocity.y -= dTime * FRICTION < 1 ? velocity.y * dTime * FRICTION : 0
