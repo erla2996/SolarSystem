@@ -196,6 +196,7 @@ function renderBody (cb, mesh, time) {
     const cbLoc = cb.location(time)
     mesh.position.set(cbLoc.x, cbLoc.y, cbLoc.z)
     mesh.setRotationFromAxisAngle(cb.up, cb.rotation(time))
+    mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0).cross(cb.up).normalize(), new THREE.Vector3(0, 1, 0).angleTo(cb.up))
     if (cb.children !== null) {
         const children = cb.getChildren()
         const cLen = children.length
