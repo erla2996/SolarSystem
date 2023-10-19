@@ -126,7 +126,7 @@ const MERCURY = new CelestialBody(
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[2], SCALE * coords[1])
     },
     time => {
-        return SCALE * 1.63083872 * 1e-5 * 1000
+        return SCALE * 1.63083872 * 1e-5
     },
     time => {
         return ((time * TIME_SCALE) % 58.646) / 58.646 * (Math.PI * 2)
@@ -143,7 +143,7 @@ const VENUS = new CelestialBody(
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[2], SCALE * coords[1])
     },
     time => {
-        return SCALE * 4.04537843 * 1e-5 * 1000
+        return SCALE * 4.04537843 * 1e-5
     },
     time => {
         return -((time * TIME_SCALE) % 116.75) / 116.75 * (Math.PI * 2)
@@ -160,7 +160,7 @@ const EARTH = new CelestialBody(
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[2], SCALE * coords[1])
     },
     time => {
-        return SCALE * 4.25875 * 1e-5 * 1000
+        return SCALE * 4.25875 * 1e-5
     },
     time => {
         return ((time * TIME_SCALE) % 0.997) / 0.997 * (Math.PI * 2)
@@ -177,7 +177,7 @@ const MARS = new CelestialBody(
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[2], SCALE * coords[1])
     },
     time => {
-        return SCALE * 2.26574081 * 1e-5 * 1000
+        return SCALE * 2.26574081 * 1e-5
     },
     time => {
         return ((time * TIME_SCALE) % 1.026) / 1.026 * (Math.PI * 2)
@@ -194,7 +194,7 @@ const JUPITER = new CelestialBody(
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[2], SCALE * coords[1])
     },
     time => {
-        return SCALE * 0.00046732617 * 1000
+        return SCALE * 0.00046732617
     },
     time => {
         return ((time * TIME_SCALE) % 0.414) / 0.414 * (Math.PI * 2)
@@ -211,7 +211,7 @@ const SATURN = new CelestialBody(
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[2], SCALE * coords[1])
     },
     time => {
-        return SCALE * 0.00038925688 * 1000
+        return SCALE * 0.00038925688
     },
     time => {
         return ((time * TIME_SCALE) % 0.440) / 0.440 * (Math.PI * 2)
@@ -228,7 +228,7 @@ const URANUS = new CelestialBody(
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[2], SCALE * coords[1])
     },
     time => {
-        return SCALE * 0.0001695345 * 1000
+        return SCALE * 0.0001695345
     },
     time => {
         return -((time * TIME_SCALE) % 0.718) / 0.718 * (Math.PI * 2)
@@ -245,7 +245,7 @@ const NEPTUNE = new CelestialBody(
         return new THREE.Vector3(SCALE * coords[0], SCALE * coords[2], SCALE * coords[1])
     },
     time => {
-        return SCALE * 0.0001645879 * 1000
+        return SCALE * 0.0001645879
     },
     time => {
         return ((time * TIME_SCALE) % 0.671) / 0.671 * (Math.PI * 2)
